@@ -49,7 +49,7 @@ public abstract class ItemAcervo {
     }
 
     public boolean isDisponivel() {
-        return disponivel;
+        return this.disponivel;
     }
 
     protected void marcarComoEmprestado() {
