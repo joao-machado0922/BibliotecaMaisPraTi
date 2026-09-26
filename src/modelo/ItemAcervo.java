@@ -3,41 +3,46 @@ package modelo;
 import contrato.Config;
 
 public abstract class ItemAcervo {
-    private final String id;
+
+    private final String codigo;
+
     private final String titulo;
     private final int ano;
+
     private boolean disponivel;
+
     private static int totalItensCriados = 0;
 
-    protected ItemAcervo(String id, String titulo, int ano) {
-        if (totalItensCriados == Config.CAPACIDADE_ACERVO) {
-            throw new IllegalArgumentException("CAPACIDADE DA BIBLIOTECA NO MÁXIMO!");
-        }
+    protected ItemAcervo(String codigo, String titulo, int ano) {
 
-        if (id == null || id.isBlank()) {
-            throw new IllegalArgumentException("Código inválido");
+        if (codigo == null || codigo.isBlank()) {
+            throw new IllegalArgumentException("Codigo do item e obrigatorio.");
         }
 
         if (titulo == null || titulo.isBlank()) {
-            throw new IllegalArgumentException("Título inválido");
+            throw new IllegalArgumentException("Titulo do item e obrigatorio.");
         }
 
         if (ano < Config.ANO_MINIMO_PUBLICACAO || ano > Config.ANO_MAXIMO_PUBLICACAO) {
-            throw new IllegalArgumentException("Ano inválido");
+            throw new IllegalArgumentException(
+                    "Ano invalido: " + ano + ". Esperado entre "
+                            + Config.ANO_MINIMO_PUBLICACAO + " e " + Config.ANO_MAXIMO_PUBLICACAO + ".");
         }
 
-        this.id = id;
+        this.codigo = codigo;
         this.titulo = titulo;
         this.ano = ano;
-        this.disponivel = true;
-        totalItensCriados ++;
+        this.disponivel = true;   // todo item nasce disponivel
+
+        totalItensCriados++;
     }
 
     public abstract String getCategoria();
-    public abstract String getDescricao();
 
-    public String getId() {
-        return id;
+    public abstract String getDescricaoDetalhada();
+
+    public String getCodigo() {
+        return codigo;
     }
 
     public String getTitulo() {
@@ -49,7 +54,7 @@ public abstract class ItemAcervo {
     }
 
     public boolean isDisponivel() {
-        return this.disponivel;
+        return disponivel;
     }
 
     protected void marcarComoEmprestado() {
@@ -62,5 +67,27 @@ public abstract class ItemAcervo {
 
     public static int getTotalItensCriados() {
         return totalItensCriados;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        ItemAcervo outro = (ItemAcervo) obj;
+        return codigo.equals(outro.codigo);
+    }
+
+    @Override
+    public int hashCode() {
+        return codigo.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%-8s | %-32s | %d", getCategoria(), titulo, ano);
     }
 }

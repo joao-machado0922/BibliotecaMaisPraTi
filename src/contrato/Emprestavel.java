@@ -13,7 +13,7 @@ public interface Emprestavel {
     }
 
     default double calcularMulta(int diasAtraso) {
-        if(diasAtraso <= 0) {
+        if (diasAtraso <= 0) {
             return 0;
         }
         return diasAtraso * getMultaPorDia();

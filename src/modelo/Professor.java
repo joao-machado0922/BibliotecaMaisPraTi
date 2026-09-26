@@ -1,17 +1,43 @@
 package modelo;
 
 public class Professor extends Usuario {
-    public Professor(String id, String nome, String email, ItemAcervo[] itensEmprestados, int quantidadeEmprestada, double multaAcumulada) {
-        super(id, nome, email, itensEmprestados, quantidadeEmprestada, multaAcumulada);
+
+    private final String departamento;
+    private final String titulacao;
+
+    public Professor(String matricula, String nome, String email,
+                     String departamento, String titulacao) {
+        super(matricula, nome, email);
+        this.departamento = departamento;
+        this.titulacao = titulacao;
     }
 
     @Override
-    public int getLimiteEmprestimos() {
-        return 5;
+    public int getLimiteItens() {
+        return 10;
     }
 
     @Override
     public double getPercentualDesconto() {
-        return 0.5;
+        return 0.50;     // 50%
+    }
+
+    @Override
+    public String getCategoria() {
+        return "Professor";
+    }
+
+    @Override
+    public boolean podeRetirarMaterialRestrito() {
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + " | " + titulacao + ", " + departamento;
+    }
+
+    public String getDepartamento() {
+        return departamento;
     }
 }

@@ -2,9 +2,15 @@ package modelo;
 
 public abstract class Aluno extends Usuario {
     private final String curso;
+    private final int periodo;
 
-    protected Aluno(String id, String nome, String email, ItemAcervo[] itensEmprestados, int quantidadeEmprestada, double multaAcumulada, String curso) {
-        super(id, nome, email, itensEmprestados, quantidadeEmprestada, multaAcumulada);
+    protected Aluno(String id, String nome, String email, String curso, int periodo) {
+        super(id, nome, email);
         this.curso = curso;
+        this.periodo = periodo;
+    }
+
+    public String getCurso() {
+        return this.curso;
     }
 }

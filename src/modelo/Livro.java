@@ -5,13 +5,12 @@ import contrato.Reservavel;
 public class Livro extends ItemEmprestavel implements Reservavel {
     private final String autor;
     private final String isbn;
-    private final int quantidadePaginas;
     private int renovacoesUtilizadas;
     private String nomeReservante;
 
     private static final int MAXIMO_RENOVACOES = 2;
 
-    public Livro(String id, String titulo, int ano, String autor, String isbn, int quantidadePaginas) {
+    public Livro(String id, String titulo, int ano, String autor, String isbn) {
         super(id, titulo, ano);
         if (autor == null || autor.isBlank()) {
             throw new IllegalArgumentException("Autor inválido");
@@ -21,13 +20,8 @@ public class Livro extends ItemEmprestavel implements Reservavel {
             throw new IllegalArgumentException("ISBN inválido");
         }
 
-        if (quantidadePaginas <= 0) {
-            throw new IllegalArgumentException("Quantidade de páginas inválida");
-        }
-
         this.autor = autor;
         this.isbn = isbn;
-        this.quantidadePaginas = quantidadePaginas;
         this.renovacoesUtilizadas = 0;
         this.nomeReservante = null;
     }
@@ -43,8 +37,18 @@ public class Livro extends ItemEmprestavel implements Reservavel {
     }
 
     @Override
+    public boolean devolver() {
+        return false;
+    }
+
+    @Override
     public boolean permiteRenovacao() {
         return renovacoesUtilizadas < MAXIMO_RENOVACOES;
+    }
+
+    @Override
+    public double calcularMulta(int diasAtraso) {
+        return diasAtraso * getMultaPorDia();
     }
 
     @Override
@@ -64,18 +68,18 @@ public class Livro extends ItemEmprestavel implements Reservavel {
     }
 
     @Override
-    public String getReservante() {
+    public String getNomeReservante() {
         return nomeReservante == null ? "-" : this.nomeReservante;
     }
 
     @Override
     public String getCategoria() {
-        return "Livro";
+        return "LIVRO";
     }
 
     @Override
-    public String getDescricao() {
-        return "Autor: " + this.autor + "| Páginas: " + this.quantidadePaginas + "| ISBN: " + this.isbn;
+    public String getDescricaoDetalhada() {
+        return "Autor: " + this.autor + "| Páginas: " + "| ISBN: " + this.isbn;
     }
 
     public boolean renovar() {
