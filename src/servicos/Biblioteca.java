@@ -3,15 +3,14 @@ package servicos;
 import contrato.Config;
 import contrato.Emprestavel;
 import contrato.Reservavel;
-import modelo.ItemAcervo;
-import modelo.ObraReferencia;
+import modelo.ItemBiblioteca;
 import modelo.Usuario;
 
 public class Biblioteca {
 
     private final String nome;
 
-    private final ItemAcervo[] acervo;
+    private final ItemBiblioteca[] acervo;
     private int totalItens;
 
     private final Usuario[] usuarios;
@@ -22,13 +21,13 @@ public class Biblioteca {
             throw new IllegalArgumentException("Nome da biblioteca e obrigatorio.");
         }
         this.nome = nome;
-        this.acervo = new ItemAcervo[Config.CAPACIDADE_ACERVO];
+        this.acervo = new ItemBiblioteca[Config.CAPACIDADE_ACERVO];
         this.usuarios = new Usuario[Config.CAPACIDADE_USUARIOS];
         this.totalItens = 0;
         this.totalUsuarios = 0;
     }
 
-    public void cadastrarItem(ItemAcervo item) {
+    public void cadastrarItem(ItemBiblioteca item) {
         if (item == null) {
             throw new IllegalArgumentException("Item nao pode ser nulo.");
         }
@@ -53,7 +52,7 @@ public class Biblioteca {
         totalUsuarios++;
     }
 
-    public ItemAcervo buscarItemPorCodigo(String codigo) {
+    public ItemBiblioteca buscarItemPorCodigo(String codigo) {
         for (int i = 0; i < totalItens; i++) {
             if (acervo[i].getCodigo().equals(codigo)) {   // equals, nunca ==
                 return acervo[i];
@@ -64,7 +63,7 @@ public class Biblioteca {
 
     public boolean emprestar(String codigoItem, Usuario usuario) {
 
-        ItemAcervo item = buscarItemPorCodigo(codigoItem);
+        ItemBiblioteca item = buscarItemPorCodigo(codigoItem);
 
         if (item == null) {
             System.out.println("   [X] Item nao encontrado: " + codigoItem);
@@ -82,7 +81,7 @@ public class Biblioteca {
 
     public double processarDevolucao(String codigoItem, Usuario usuario, int diasAtraso) {
 
-        ItemAcervo item = buscarItemPorCodigo(codigoItem);
+        ItemBiblioteca item = buscarItemPorCodigo(codigoItem);
 
         if (item == null || !(item instanceof Emprestavel emprestavel)) {
             return 0.0;
@@ -111,19 +110,15 @@ public class Biblioteca {
         imprimirSeparador();
 
         for (int i = 0; i < totalItens; i++) {
-            ItemAcervo item = acervo[i];
+            ItemBiblioteca item = acervo[i];
 
-            String prazoEMulta;
-            if (item instanceof Emprestavel e) {
-                prazoEMulta = String.format("%2d dias | R$ %.2f/dia",
-                        e.getPrazoEmprestimoDias(), e.getMultaPorDia());
-            } else {
-                prazoEMulta = "CONSULTA LOCAL";
-            }
-
-            System.out.printf("%-8s | %-31s | %s%n",
-                    item.getCategoria(), item.getTitulo(), prazoEMulta);
+            System.out.printf("%-8s | %-31s | %2d dias | R$ %.2f/dia%n",
+                    item.getCategoria(),
+                    item.getTitulo(),
+                    item.getPrazoEmprestimoDias(),
+                    item.getMultaPorDia());
         }
+
         System.out.println();
     }
 
@@ -181,16 +176,6 @@ public class Biblioteca {
         System.out.println();
     }
 
-    public int contarObrasDeReferencia() {
-        int total = 0;
-        for (int i = 0; i < totalItens; i++) {
-            if (acervo[i] instanceof ObraReferencia) {
-                total++;
-            }
-        }
-        return total;
-    }
-
     public String getNome() {
         return nome;
     }
@@ -199,7 +184,7 @@ public class Biblioteca {
         return totalItens;
     }
 
-    public ItemAcervo[] getAcervo() {
+    public ItemBiblioteca[] getAcervo() {
         return java.util.Arrays.copyOf(acervo, totalItens);
     }
 }

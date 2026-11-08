@@ -37,18 +37,8 @@ public class Livro extends ItemEmprestavel implements Reservavel {
     }
 
     @Override
-    public boolean devolver() {
-        return false;
-    }
-
-    @Override
     public boolean permiteRenovacao() {
         return renovacoesUtilizadas < MAXIMO_RENOVACOES;
-    }
-
-    @Override
-    public double calcularMulta(int diasAtraso) {
-        return diasAtraso * getMultaPorDia();
     }
 
     @Override
@@ -57,8 +47,8 @@ public class Livro extends ItemEmprestavel implements Reservavel {
             throw new IllegalArgumentException("Usuário inválido");
         }
 
-        if (isDisponivel()) {
-           this.nomeReservante = usuario.getNome();
+        if (!isDisponivel() && !temReserva()) {
+            this.nomeReservante = usuario.getNome();
         }
     }
 
@@ -79,7 +69,7 @@ public class Livro extends ItemEmprestavel implements Reservavel {
 
     @Override
     public String getDescricaoDetalhada() {
-        return "Autor: " + this.autor + "| Páginas: " + "| ISBN: " + this.isbn;
+        return "Autor: " + this.autor + "| ISBN: " + this.isbn;
     }
 
     public boolean renovar() {

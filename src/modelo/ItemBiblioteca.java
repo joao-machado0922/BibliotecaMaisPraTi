@@ -2,7 +2,7 @@ package modelo;
 
 import contrato.Config;
 
-public abstract class ItemAcervo {
+public abstract class ItemBiblioteca {
 
     private final String codigo;
 
@@ -13,7 +13,7 @@ public abstract class ItemAcervo {
 
     private static int totalItensCriados = 0;
 
-    protected ItemAcervo(String codigo, String titulo, int ano) {
+    protected ItemBiblioteca(String codigo, String titulo, int ano) {
 
         if (codigo == null || codigo.isBlank()) {
             throw new IllegalArgumentException("Codigo do item e obrigatorio.");
@@ -32,10 +32,14 @@ public abstract class ItemAcervo {
         this.codigo = codigo;
         this.titulo = titulo;
         this.ano = ano;
-        this.disponivel = true;   // todo item nasce disponivel
+        this.disponivel = true;
 
         totalItensCriados++;
     }
+
+    public abstract int getPrazoEmprestimoDias();
+
+    public abstract double getMultaPorDia();
 
     public abstract String getCategoria();
 
@@ -77,7 +81,7 @@ public abstract class ItemAcervo {
         if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        ItemAcervo outro = (ItemAcervo) obj;
+        ItemBiblioteca outro = (ItemBiblioteca) obj;
         return codigo.equals(outro.codigo);
     }
 

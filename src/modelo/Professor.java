@@ -14,22 +14,17 @@ public class Professor extends Usuario {
 
     @Override
     public int getLimiteItens() {
-        return 10;
+        return 5;
     }
 
     @Override
     public double getPercentualDesconto() {
-        return 0.50;     // 50%
+        return 0.50;
     }
 
     @Override
     public String getCategoria() {
         return "Professor";
-    }
-
-    @Override
-    public boolean podeRetirarMaterialRestrito() {
-        return true;
     }
 
     @Override

@@ -41,7 +41,7 @@ public class Main {
         // CADASTRO DO ACERVO
         // ============================================================
         // Todos os objetos abaixo sao de classes DIFERENTES, mas o metodo
-        // cadastrarItem() recebe ItemAcervo. Isso e UPCASTING: a subclasse
+        // cadastrarItem() recebe ItemBiblioteca. Isso e UPCASTING: a subclasse
         // vira o tipo do pai automaticamente, sem cast e sem risco.
         // ------------------------------------------------------------
 
@@ -53,31 +53,22 @@ public class Main {
                 412, "04/2026");
         DVD documentario = new DVD("D001", "Documentario: Codigos", 2019,
                 92, "Livre");
-        Tese compiladores = new Tese("T001", "Otimizacao de Compiladores", 2024,
-                "M. Ferreira", "Prof. Dra. L. Souza", "PPGCC");
-        ObraReferencia houaiss = new ObraReferencia("F001", "Dicionario Houaiss", 2009,
-                "Dicionario", "A-12");
-        ObraReferencia barsa = new ObraReferencia("F002", "Enciclopedia Barsa", 2015,
-                "Enciclopedia", "A-14");
 
         biblioteca.cadastrarItem(cleanCode);
         biblioteca.cadastrarItem(estruturas);
         biblioteca.cadastrarItem(sciAm);
         biblioteca.cadastrarItem(documentario);
-        biblioteca.cadastrarItem(compiladores);
-        biblioteca.cadastrarItem(houaiss);
-        biblioteca.cadastrarItem(barsa);
 
         // ============================================================
         // CADASTRO DE USUARIOS
         // ============================================================
 
-        AlunoGraduacao ana = new AlunoGraduacao("G2024001", "Ana Ribeiro",
+        Aluno ana = new Aluno("G2024001", "Ana Ribeiro",
                 "ana@uni.br", "Ciencia da Computacao", 4);
-        AlunoGraduacao bruno = new AlunoGraduacao("G2024002", "Bruno Alves",
+        Aluno bruno = new Aluno("G2024002", "Bruno Alves",
                 "bruno@uni.br", "Engenharia", 2);
-        AlunoPosGraduado carla = new AlunoPosGraduado("P2023010", "Carla Nunes",
-                "carla@uni.br", "Mestrado em CC", "Prof. Dra. L. Souza");
+        Aluno carla = new Aluno("P2023010", "Carla Nunes",
+                "carla@uni.br", "Mestrado em CC", 4);
         Professor diego = new Professor("D0099", "Diego Martins",
                 "diego@uni.br", "Computacao", "Dr.");
 
@@ -104,36 +95,7 @@ public class Main {
         biblioteca.emprestar("D001", ana);       // ok — atinge o limite de 3
         biblioteca.emprestar("L002", ana);       // bloqueado: limite
         biblioteca.emprestar("L001", bruno);     // bloqueado: indisponivel
-        biblioteca.emprestar("T001", bruno);     // bloqueado: restrito a pos
-        biblioteca.emprestar("T001", carla);     // ok
         biblioteca.emprestar("L002", diego);     // ok
-        System.out.println();
-
-        // ============================================================
-        // [3] OBRAS DE REFERENCIA — a regra que virou TIPO
-        // ============================================================
-
-        System.out.println("[3] OBRAS DE REFERENCIA");
-        separador();
-
-        // Via biblioteca: o item existe, mas nao cumpre o contrato Emprestavel.
-        biblioteca.emprestar("F001", diego);
-
-        // Uso legitimo:
-        houaiss.consultarNoLocal(diego);
-
-        // ⚠️ A LINHA ABAIXO NAO COMPILA — descomente para comprovar:
-        //
-        //     houaiss.emprestar(diego);
-        //
-        // Erro: cannot find symbol — method emprestar(Usuario)
-        //
-        // ObraReferencia estende ItemAcervo, e nao ItemEmprestavel. Ela
-        // simplesmente NAO POSSUI o metodo. A regra de negocio "obra de
-        // referencia nunca sai" e garantida pelo COMPILADOR, nao por um if
-        // que alguem pode esquecer de escrever.
-        System.out.println("   [i] houaiss.emprestar(diego) nao compila - "
-                + "protegido pelo sistema de tipos");
         System.out.println();
 
         // ============================================================
@@ -145,7 +107,6 @@ public class Main {
 
         demonstrarDevolucao(biblioteca, "L001", ana, 5);       // livro: 0,50/dia
         demonstrarDevolucao(biblioteca, "D001", ana, 5);       // DVD:   2,00/dia
-        demonstrarDevolucao(biblioteca, "T001", carla, 5);     // tese:  1,50/dia, -20%
         demonstrarDevolucao(biblioteca, "L002", diego, 5);     // livro: 0,50/dia, -50%
         System.out.println();
 
@@ -193,7 +154,7 @@ public class Main {
         //
         //     cleanCode.disponivel = true;
         //
-        // Erro: disponivel has private access in ItemAcervo
+        // Erro: disponivel has private access in ItemBiblioteca
         System.out.println("   [OK] Compilacao: cleanCode.disponivel = true - bloqueado");
 
         // --- Teste 2: bloqueado em COMPILACAO ---
@@ -227,7 +188,7 @@ public class Main {
         // --- Teste 6: COPIA DEFENSIVA ---
         // Este e o teste mais importante da secao. Sem Arrays.copyOf no
         // getter, o "private" do atributo seria puramente decorativo.
-        ItemAcervo[] copiaExterna = ana.getItensEmprestados();
+        ItemBiblioteca[] copiaExterna = ana.getItensEmprestados();
         int antes = ana.getQuantidadeEmprestada();
 
         if (copiaExterna.length > 0) {
@@ -235,7 +196,7 @@ public class Main {
         }
 
         int depois = ana.getQuantidadeEmprestada();
-        ItemAcervo[] novaConsulta = ana.getItensEmprestados();
+        ItemBiblioteca[] novaConsulta = ana.getItensEmprestados();
 
         boolean intacto = (antes == depois)
                 && (novaConsulta.length == 0 || novaConsulta[0] != null);
@@ -266,47 +227,16 @@ public class Main {
         System.out.println();
 
         // ============================================================
-        // [10] PROVA DE EXTENSIBILIDADE
-        // ============================================================
-
-        System.out.println("[10] PROVA DE EXTENSIBILIDADE");
-        separador();
-        System.out.println("   Adicionando AudioLivro e Visitante - categorias que");
-        System.out.println("   nao existiam quando os lacos acima foram escritos.");
-        System.out.println();
-
-        AudioLivro audio = new AudioLivro("A001", "O Cortico (audio)", 2021,
-                "Paulo Cesar", 480);
-        biblioteca.cadastrarItem(audio);
-
-        Visitante elena = new Visitante("V0001", "Elena Prado",
-                "elena@externo.com", "RG 12.345.678-9");
-        biblioteca.cadastrarUsuario(elena);
-
-        biblioteca.emprestar("A001", elena);      // ok — limite 1
-        biblioteca.emprestar("L002", elena);      // bloqueado: limite de visitante e 1
-        System.out.println();
-
-        biblioteca.listarAcervo();
-
-        System.out.println("   >>> Nenhum laco, nenhum if e nenhuma classe existente");
-        System.out.println("   >>> precisou ser alterado para isso funcionar.");
-        System.out.println("   >>> Isso e polimorfismo pagando o investimento da modelagem.");
-        System.out.println();
-
-        // ============================================================
         // RESUMO FINAL — atributos e metodos static
         // ============================================================
 
         titulo("RESUMO");
         System.out.println("   Itens criados nesta execucao ..... "
-                + ItemAcervo.getTotalItensCriados());
+                + ItemBiblioteca.getTotalItensCriados());
         System.out.println("   Usuarios criados ................. "
                 + Usuario.getTotalUsuariosCriados());
         System.out.println("   Itens no acervo .................. "
                 + biblioteca.getTotalItens());
-        System.out.println("   Obras de consulta local .......... "
-                + biblioteca.contarObrasDeReferencia());
         System.out.printf("   Total em multas .................. R$ %.2f%n",
                 biblioteca.calcularMultasTotais());
         System.out.println();
@@ -330,7 +260,7 @@ public class Main {
     private static void demonstrarDevolucao(Biblioteca biblioteca, String codigo,
                                             Usuario usuario, int diasAtraso) {
 
-        ItemAcervo item = biblioteca.buscarItemPorCodigo(codigo);
+        ItemBiblioteca item = biblioteca.buscarItemPorCodigo(codigo);
         if (!(item instanceof Emprestavel e)) {
             return;
         }

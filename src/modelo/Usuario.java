@@ -8,7 +8,7 @@ public abstract class Usuario implements Notificavel {
     private final String matricula;
     private final String nome;
     private final String email;
-    private final ItemAcervo[] itensEmprestados;
+    private final ItemBiblioteca[] itensEmprestados;
 
     private int quantidadeEmprestada;
     private double multaAcumulada;
@@ -30,7 +30,7 @@ public abstract class Usuario implements Notificavel {
         this.quantidadeEmprestada = 0;
         this.multaAcumulada = 0.0;
 
-        this.itensEmprestados = new ItemAcervo[getLimiteItens()];
+        this.itensEmprestados = new ItemBiblioteca[getLimiteItens()];
 
         totalUsuariosCriados++;
     }
@@ -40,8 +40,6 @@ public abstract class Usuario implements Notificavel {
     public abstract double getPercentualDesconto();
 
     public abstract String getCategoria();
-
-    public abstract boolean podeRetirarMaterialRestrito();
 
     public double aplicarDesconto(double multaBruta) {
         if (multaBruta < 0) {
@@ -54,7 +52,7 @@ public abstract class Usuario implements Notificavel {
         return quantidadeEmprestada < getLimiteItens();
     }
 
-    void registrarEmprestimo(ItemAcervo item) {
+    void registrarEmprestimo(ItemBiblioteca item) {
         if (!podeEmprestarMais()) {
             throw new IllegalStateException(
                     "Limite de emprestimos ja atingido para " + nome);
@@ -63,7 +61,7 @@ public abstract class Usuario implements Notificavel {
         quantidadeEmprestada++;
     }
 
-    boolean registrarDevolucao(ItemAcervo item) {
+    boolean registrarDevolucao(ItemBiblioteca item) {
         for (int i = 0; i < quantidadeEmprestada; i++) {
             if (itensEmprestados[i].equals(item)) {
                 for (int j = i; j < quantidadeEmprestada - 1; j++) {
@@ -114,7 +112,7 @@ public abstract class Usuario implements Notificavel {
         return multaAcumulada;
     }
 
-    public ItemAcervo[] getItensEmprestados() {
+    public ItemBiblioteca[] getItensEmprestados() {
         return Arrays.copyOf(itensEmprestados, quantidadeEmprestada);
     }
 

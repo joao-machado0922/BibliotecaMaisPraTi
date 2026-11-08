@@ -2,7 +2,7 @@ package modelo;
 
 import contrato.Emprestavel;
 
-public abstract class ItemEmprestavel extends ItemAcervo implements Emprestavel {
+public abstract class ItemEmprestavel extends ItemBiblioteca implements Emprestavel {
 
     private Usuario usuarioAtual;
 
